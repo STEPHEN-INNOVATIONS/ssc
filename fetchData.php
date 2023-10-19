@@ -5,35 +5,28 @@ $username = "root"; // Change to your MySQL username
 $password = "jude7733"; // Change to your MySQL password
 $dbname = "mediDB";
 
-// Create a connection to the database
-$conn = new mysqli($servername, $username, $password, $dbname);
+try {
+    // Create a PDO database connection
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    // Set PDO to throw exceptions on error
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // SQL query to fetch medicines and side effects from the 'mediTable'
+    $sql = "SELECT medicines, side_effects FROM mediTable";
+
+    // Prepare and execute the query
+    $stmt = $conn->query($sql);
+
+    // Fetch the data as an associative array
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Close the database connection (not necessary with PDO)
+
+    // Send the data as JSON
+    header('Content-Type: application/json');
+    echo json_encode($data);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
-
-// SQL query to fetch medicines and side effects from the 'mediTable'
-$sql = "SELECT medicines, side_effects FROM mediTable";
-
-$result = $conn->query($sql);
-
-$data = array();
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        // Add medicines and side effects to the data array
-        $data[] = array(
-            'medicines' => $row['medicines'],
-            'side_effects' => $row['side_effects']
-        );
-    }
-}
-
-// Close the database connection
-$conn->close();
-
-// Send the data as JSON
-header('Content-Type: application/json');
-echo json_encode($data);
 ?>
