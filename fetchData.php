@@ -1,4 +1,8 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
 // Database connection parameters
 $servername = "localhost";  // Change to your MySQL server address
 $username = "root"; // Change to your MySQL username
